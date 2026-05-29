@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, redirect
 import sqlite3
 app = Flask(__name__)
 
+
+
 # Connect to the SQLite database
 DB_NAME = 'students.db'
 def init_db():
@@ -54,6 +56,24 @@ def delete_student(id):
     conn.close()
     return redirect('/students')
 
+@app.route('/edit/<int:id>', methods=['GET','POST'])
+def edit_student(id):
+    conn = sqlite3.connect(DB_NAME)
+    if request.method == 'POST':
+        name = request.form['name']
+        age = request.form['age']
+        course = request.form['course']
+        conn.execute(
+            "UPDATE students SET name=?, age=?, course=? WHERE id=?",(name,age,course,id)
+        )
+        conn.commit()
+        conn.close()
+        return redirect('/students')
+    
+    cursor = conn.execute("select * from students WHERE id =?",(id,))
+    student = cursor.fetchone()
+    conn.close()
+    return render_template('edit.html', student=student)
 if __name__ == '__main__':
     init_db()
     app.run(debug=True)
