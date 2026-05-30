@@ -1,40 +1,66 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Student List</title>
-        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    </head>
-    <body>
-        <h1>Student List</h1>
-            <table border="1" cellpadding="10" cellspacing="0">
-                <tr>
-                    <th>id</th>
-                    <th>name</th>
-                    <th>age</th>
-                    <th>course</th>
-                    <th>Action</th>
-                </tr>
-                {% for student in students %}
-                <tr>
-                    <td>{{ student[0] }}</td>
-                    <td>{{ student[1] }}</td>
-                    <td>{{ student[2] }}</td>
-                    <td>{{ student[3] }}</td>
+<html lang="en">
 
-                <td>
-                    <a href="/edit/{{ student[0] }}">
-                        <button>Edit</button>
-                    </a>
-                </td>
-                        
+<head>
+    <title>Student List</title>
 
-                <td>
-                    <a href="/delete/{{ student[0] }}">
-                        <button>Delete</button>
-                    </a>
-                </td>
-                </tr>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
 
-                {% endfor %}
-            </table>
-    </body>
+<body>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="/add">Add Student</a>
+        <a href="/students">View Students</a>
+    </nav>
+
+    <hr>
+
+    <h1>Student List</h1>
+
+    <form method="GET" action="/students">
+        <input type="text" name="search" placeholder="Search Student">
+        <button type="submit">Search</button>
+    </form>
+
+    <br>
+
+    <table>
+
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Course</th>
+            <th>Action</th>
+        </tr>
+
+        {% for student in students %}
+        <tr>
+
+            <td>{{ student[0] }}</td>
+            <td>{{ student[1] }}</td>
+            <td>{{ student[2] }}</td>
+            <td>{{ student[3] }}</td>
+
+            <td>
+
+                <a href="/edit/{{ student[0] }}">
+                    <button type="button" class="edit-btn">Edit</button>
+                </a>
+
+                <a href="/delete/{{ student[0] }}">
+                    <button type="button" class="delete-btn">Delete</button>
+                </a>
+
+            </td>
+
+        </tr>
+        {% endfor %}
+
+    </table>
+
+</body>
+
+</html>

@@ -6,6 +6,7 @@ app = Flask(__name__)
 
 # Connect to the SQLite database
 DB_NAME = 'students.db'
+STUDENTS_ROUTE = '/students'
 def init_db():
     conn = sqlite3.connect(DB_NAME)
     conn.execute('''
@@ -19,7 +20,14 @@ def init_db():
     conn.close()
 @app.route('/')
 def index():
-    return render_template('index.html')
+    conn = sqlite3.connect(DB_NAME)
+    
+    cursor = conn.execute("select count(*) from students")
+    total_students = cursor.fetchone()[0]
+    
+    conn.close()
+    
+    return render_template('index.html', total_students=total_students)
 
 @app.route('/add', methods=['GET','POST'])
 def add_student():
@@ -41,8 +49,14 @@ def add_student():
 
 @app.route('/students')
 def students():
-    conn = sqlite3.connect('students.db')
-    cursor = conn.execute("select * from students")
+    search = request.args.get('search')
+    
+    conn = sqlite3.connect(DB_NAME)
+    
+    if search:
+        cursor = conn.execute("select * from students where name like ?", ('%' + search + '%',))
+    else:
+        cursor = conn.execute("select * from students")
     student_data = cursor.fetchall()
     print(student_data)
     conn.close()
@@ -54,7 +68,7 @@ def delete_student(id):
     conn.execute("delete from students where id = ?", (id,))
     conn.commit()
     conn.close()
-    return redirect('/students')
+    return redirect(STUDENTS_ROUTE)
 
 @app.route('/edit/<int:id>', methods=['GET','POST'])
 def edit_student(id):
@@ -68,7 +82,7 @@ def edit_student(id):
         )
         conn.commit()
         conn.close()
-        return redirect('/students')
+        return redirect(STUDENTS_ROUTE)
     
     cursor = conn.execute("select * from students WHERE id =?",(id,))
     student = cursor.fetchone()

@@ -1,18 +1,56 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
     <title>Student Management System</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body>
-    <h1>Student Management System</h1>
-    <p>Welcome to Student Management System</p>
-<a href="/add">
-    <button>Add Student</button>
-</a>
-<br><br>
-<a href="/students">
-    <button>View Students</button>
-</a>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="/add">Add Student</a>
+        <a href="/students">View Students</a>
+    </nav>
+
+    <div class="container">
+
+        <h1>🎓 Student Management System</h1>
+
+        <p>
+            Manage student records using Flask and SQLite.
+        </p>
+
+        <div class="card-container">
+
+            <div class="card">
+            <h2>👨‍🎓 Total Students</h2>
+            <h1>{{ total_students }}</h1>
+            </div>
+
+            <div class="card">
+                <h2>➕ Add Student</h2>
+                <p>Create a new student record.</p>
+
+                <a href="/add">
+                    <button>Add Student</button>
+                </a>
+            </div>
+
+            <div class="card">
+                <h2>📋 View Students</h2>
+                <p>View, edit and delete students.</p>
+
+                <a href="/students">
+                    <button>View Students</button>
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
 </body>
+
 </html>

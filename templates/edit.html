@@ -1,26 +1,37 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" xml:lang="en">
     <head>
         <title>Edite student</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     </head>
     <body>
+        <nav>
+    <a href="/">Home</a> |
+    <a href="/add">Add Student</a> |
+    <a href="/students">View Students</a>
+</nav>
+
+<hr>
         <h1>Edit student</h1>
         <form method="POST">
-            <label>Name</label>
+            <label>Name
             <input type="text"
                     name="name"
                     value="{{ student[1] }}">
                     <br><br>
-            <label>Age</label>
+            </label>
+            <label>Age
             <input type="number"
                     name="age"
                     value="{{ student[2] }}">
                     <br><br>
-            <label>Course</label>
+            </label>
+            <label>Course
             <input type="text"
                     name="course"
-                    value={{ student[3] }}>
+                    value="{{ student[3] }}">
                     <br><br>
+            </label>
             <button type="submit">update student</button>
         </form>
     </body>

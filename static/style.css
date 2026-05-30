@@ -1,24 +1,142 @@
+.container{
+    margin-top: 40px;
+}
+
+.card-container{
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
+
+.card{
+    background: white;
+    width: 300px;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0px 2px 10px rgba(0,0,0,0.15);
+}
+
+.card h2{
+    margin-bottom: 10px;
+}
+
+.card p{
+    color: #555;
+}
+
 body{
-    font-family: Arial;
-    background-color: #ffefef;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f4f6f9;
     padding: 20px;
+    margin: 0;
+    text-align: center;
 }
+
+/* Navigation Bar */
+nav{
+    background-color: #333;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+nav a{
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    font-weight: bold;
+}
+
+nav a:hover{
+    color: #ffd700;
+}
+
+/* Heading */
 h1{
-    color: blue;
+    color: #333;
+    margin-bottom: 20px;
 }
+
+/* Forms */
+form{
+    margin: 20px auto;
+}
+
+input{
+    padding: 10px;
+    width: 250px;
+    margin: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Buttons */
 button{
-    background-color: blue;
+    background-color: #007bff;
     color: white;
     padding: 10px 20px;
-
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
+button:hover{
+    background-color: #0056b3;
+}
+
+/* Table */
 table{
     border-collapse: collapse;
-    width: 70%;
+    width: 80%;
+    margin: auto;
+    background-color: white;
+}
+
+th{
+    background-color: #007bff;
+    color: white;
 }
 
 th, td{
-    padding: 10px;
+    border: 1px solid #ddd;
+    padding: 12px;
     text-align: center;
+}
+
+tr:nth-child(even){
+    background-color: #f2f2f2;
+}
+
+tr:hover{
+    background-color: #e8f0fe;
+}
+
+a{
+    text-decoration: none;
+}
+.edit-btn{
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.delete-btn{
+    background-color: #dc3545;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.edit-btn:hover{
+    background-color: #0056b3;
+}
+
+.delete-btn:hover{
+    background-color: #b02a37;
 }
