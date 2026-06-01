@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, session
 import sqlite3
 app = Flask(__name__)
+app.secret_key = "student_management_secret"
 
 
 
@@ -18,8 +19,10 @@ def init_db():
                 )
                 ''')
     conn.close()
+    
 @app.route('/')
 def index():
+    print("index is opened")
     conn = sqlite3.connect(DB_NAME)
     
     cursor = conn.execute("select count(*) from students")
@@ -27,10 +30,36 @@ def index():
     
     conn.close()
     
+    if 'user' not in session:
+        return redirect('/login')
+    
     return render_template('index.html', total_students=total_students)
+
+@app.route('/login', methods=['GET','POST'])
+def login():
+    
+    if request.method == 'POST':
+        
+        username = request.form['username']
+        password = request.form['password']
+        
+        if username == 'admin' and password == 'admin@132':
+            
+            session['user'] = username
+            
+            return redirect('/')
+        return "invalid username or password"
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect('/login')
 
 @app.route('/add', methods=['GET','POST'])
 def add_student():
+    if 'user' not in session:
+        return redirect('/login')
     if request.method == 'POST':
         
         name = request.form['name']
@@ -53,6 +82,11 @@ def students():
     
     conn = sqlite3.connect(DB_NAME)
     
+    if 'user' not in session:
+        return redirect('/login')
+    
+    search = request.args.get('search')
+    
     if search:
         cursor = conn.execute("select * from students where name like ?", ('%' + search + '%',))
     else:
@@ -64,6 +98,8 @@ def students():
 
 @app.route('/delete/<int:id>')
 def delete_student(id):
+    if 'user' not in session:
+        return redirect('/login')
     conn = sqlite3.connect(DB_NAME)
     conn.execute("delete from students where id = ?", (id,))
     conn.commit()
@@ -72,6 +108,8 @@ def delete_student(id):
 
 @app.route('/edit/<int:id>', methods=['GET','POST'])
 def edit_student(id):
+    if 'user' not in session:
+        return redirect('/login')
     conn = sqlite3.connect(DB_NAME)
     if request.method == 'POST':
         name = request.form['name']
