@@ -1,13 +1,22 @@
-from flask import Flask, render_template, request, redirect, session
+import os
 import sqlite3
+from flask import Flask, render_template, request, redirect, session, flash
+from datetime import datetime
+
+SECRET_KEY = "student_management_secret"
 app = Flask(__name__)
-app.secret_key = "student_management_secret"
+app.secret_key = SECRET_KEY
+
 
 
 
 # Connect to the SQLite database
 DB_NAME = 'students.db'
 STUDENTS_ROUTE = '/students'
+LOGIN_ROUTE = '/login'
+SECRET_KEY = "student_management_secret"
+
+app.secret_key = SECRET_KEY
 def init_db():
     conn = sqlite3.connect(DB_NAME)
     conn.execute('''
@@ -15,10 +24,17 @@ def init_db():
                     id integer primary key autoincrement,
                     name text not null,
                     age integer,
-                    course text
+                    course text,
+                    email TEXT,
+                    phone TEXT,
+                    address TEXT,
+                    created_at TEXT
                 )
                 ''')
+    print(os.path.abspath(DB_NAME))
+    conn.commit()
     conn.close()
+    print("column added")
     
 @app.route('/')
 def index():
@@ -31,11 +47,11 @@ def index():
     conn.close()
     
     if 'user' not in session:
-        return redirect('/login')
+        return redirect(LOGIN_ROUTE)
     
     return render_template('index.html', total_students=total_students)
 
-@app.route('/login', methods=['GET','POST'])
+@app.route(LOGIN_ROUTE, methods=['GET','POST'])
 def login():
     
     if request.method == 'POST':
@@ -54,36 +70,40 @@ def login():
 @app.route('/logout')
 def logout():
     session.clear()
-    return redirect('/login')
+    return redirect(LOGIN_ROUTE)
 
 @app.route('/add', methods=['GET','POST'])
 def add_student():
     if 'user' not in session:
-        return redirect('/login')
+        return redirect(LOGIN_ROUTE)
     if request.method == 'POST':
         
         name = request.form['name']
         age = request.form['age']
         course = request.form['course']
+        email = request.form['email']
+        phone = request.form['phone']
+        address = request.form.get('address')
+        created_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         
         conn = sqlite3.connect(DB_NAME)
         conn.execute(
-            "insert into students (name, age, course) values (? , ? , ? )", (name, age, course)
+            "insert into students (name, age, course, email, phone, address, created_at) values (? , ? , ?, ?, ?, ?, ?)", (name, age, course, email, phone, address, created_at)
         )
         conn.commit()
+        flash("student added successfully")
         print("student added successfully")
         conn.close()
-        return redirect('/students')
+        return redirect(STUDENTS_ROUTE)
     return render_template('add.html')
 
 @app.route('/students')
 def students():
-    search = request.args.get('search')
     
     conn = sqlite3.connect(DB_NAME)
     
     if 'user' not in session:
-        return redirect('/login')
+        return redirect(LOGIN_ROUTE)
     
     search = request.args.get('search')
     
@@ -99,26 +119,31 @@ def students():
 @app.route('/delete/<int:id>')
 def delete_student(id):
     if 'user' not in session:
-        return redirect('/login')
+        return redirect(LOGIN_ROUTE)
     conn = sqlite3.connect(DB_NAME)
-    conn.execute("delete from students where id = ?", (id,))
+    conn.execute("DELETE FROM students WHERE id = ?", (id,))
     conn.commit()
+    flash("student deleted successfully")
     conn.close()
     return redirect(STUDENTS_ROUTE)
 
 @app.route('/edit/<int:id>', methods=['GET','POST'])
 def edit_student(id):
     if 'user' not in session:
-        return redirect('/login')
+        return redirect(LOGIN_ROUTE)
     conn = sqlite3.connect(DB_NAME)
     if request.method == 'POST':
         name = request.form['name']
         age = request.form['age']
         course = request.form['course']
+        email = request.form['email']
+        phone = request.form['phone']
+        address = request.form['address']
         conn.execute(
-            "UPDATE students SET name=?, age=?, course=? WHERE id=?",(name,age,course,id)
+            "UPDATE students SET name=?, age=?, course=?, email=?, phone=?, address=? WHERE id=?",(name,age,course,email,phone,address,id)
         )
         conn.commit()
+        flash("student updated successfully")
         conn.close()
         return redirect(STUDENTS_ROUTE)
     
